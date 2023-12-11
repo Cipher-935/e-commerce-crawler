@@ -1,3 +1,4 @@
+
 from flask import Flask, request, jsonify
 import threading
 from selenium import webdriver
@@ -8,13 +9,10 @@ from webdriver_manager.chrome import ChromeDriverManager
 from concurrent.futures import ThreadPoolExecutor
 from selenium.common.exceptions import TimeoutException, NoSuchElementException, NoSuchAttributeException, StaleElementReferenceException
 from flask_cors import CORS
-
 app = Flask(__name__)
 CORS(app)
 s1 = Service(ChromeDriverManager().install())
 tls = threading.local()
-
-
 def scrape_website(link, budget, pro_name, spec_list, s1, op):
     local_bestbuy_list = []
     local_e_list = []
@@ -26,8 +24,7 @@ def scrape_website(link, budget, pro_name, spec_list, s1, op):
             driver_bestbuy.find_element(By.XPATH, '//input[@class="textField_XaJoz"]').send_keys(pro_name)
             driver_bestbuy.find_element(By.XPATH, '//button[@class="searchButton_2mES- fitContainer_2HpHA"]').click()
             driver_bestbuy.implicitly_wait(2.5)
-            products_2 = driver_bestbuy.find_elements(By.XPATH,
-                                                      '//div[@class="col-xs-12_198le col-sm-4_13E9O col-lg-3_ECF8k x-productListItem productLine_2N9kG"]')
+            products_2 = driver_bestbuy.find_elements(By.XPATH, '//div[@class="col-xs-12_198le col-sm-4_13E9O col-lg-3_ECF8k x-productListItem productLine_2N9kG"]')
             for product in products_2:
                 b_counter = 0
                 try:
@@ -139,8 +136,7 @@ def scrape_website(link, budget, pro_name, spec_list, s1, op):
                         if e_present and p_total < budget:
                             if d_bool and l_bool:
                                 local_e_list.append(
-                                    {"Description": f"{description_4.text}", "Price": f"{p_cost}",
-                                     "link": f"{link_4_ref}"})
+                                    {"Description": f"{description_4.text}", "Price": f"{p_cost}", "link": f"{link_4_ref}"})
                             else:
                                 pass
                         else:
@@ -152,8 +148,7 @@ def scrape_website(link, budget, pro_name, spec_list, s1, op):
                         if p_total < budget:
                             if d_bool and l_bool:
                                 local_e_list.append(
-                                    {"Description": f"{description_4.text}", "Price": f"{p_cost}",
-                                     "link": f"{link_4_ref}"})
+                                    {"Description": f"{description_4.text}", "Price": f"{p_cost}", "link": f"{link_4_ref}"})
                             else:
                                 pass
                         else:
@@ -198,8 +193,7 @@ def scrape_website(link, budget, pro_name, spec_list, s1, op):
                     price_bool = False
 
                 try:
-                    link_1 = product.find_element(By.XPATH,
-                                                  './/div[@class= "a-section a-spacing-none a-spacing-top-small s-title-instructions-style"]/h2/a')
+                    link_1 = product.find_element(By.XPATH, './/div[@class= "a-section a-spacing-none a-spacing-top-small s-title-instructions-style"]/h2/a')
                     link_1_ref = link_1.get_attribute('href')
                     link_bool = True
                 except:
@@ -254,10 +248,11 @@ def scrape_website(link, budget, pro_name, spec_list, s1, op):
             driver_amazon.close()
         except ValueError:
             driver_amazon.close()
+    
+
 
     # Return local lists
     return local_bestbuy_list, local_e_list, local_amazon_list
-
 
 @app.route('/', methods=['POST'])
 def start():
@@ -310,7 +305,6 @@ def start():
 
     new_obj = {"list_1": local_bestbuy_list, "list_2": local_e_list, "list_3": local_amazon_list}
     return jsonify(new_obj)
-
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000)
