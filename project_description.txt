@@ -1,0 +1,1 @@
+A python cralwer over flask server I developed long ago in order to scrape the e-commerce platforms in a multithreaded fashion in order to get the best deals. I used selenium framework and robust error handling.
